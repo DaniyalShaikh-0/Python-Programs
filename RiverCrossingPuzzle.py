@@ -1,11 +1,14 @@
 import random
 outval=0
 inval=0
-def rotate_90(state):
-    choice = choose(state)
-    print('Before rotating : ')
-    for i in state:
+def display(arr):
+    print('\n\n-----------------Displaying------------------\n')
+    for i in arr:
         print(i)
+    print('\n-----------------End------------------\n\n')
+def rotate_90(state,n):
+    choice = choose(state,n)
+    len_ = len(state)
     init= [['', '', ''],
            ['', '', ''],
            ['', '', '']]
@@ -14,18 +17,33 @@ def rotate_90(state):
         for ind,val in enumerate(row):
             init[ind][index]=val
         index-=1
+    #print('Before Rotating')
+    #display(state)
     global outval
     global inval
     x=0
     for v in range(outval,outval+3):
         y=0
         for w in range(inval,inval+3):
-            initial[v][w]=init[x][y]
+            retstate[v][w]=init[x][y]
             y+=1
         x+=1
-    return initial
-def choose(block):
-    n = int(input("enter n :   "))
+    for i in range(len_):
+        for j in range(len_):
+            if retstate[i][j]!='':
+                continue
+            retstate[i][j]=state[i][j]
+    #print('After Rotating')
+    # display(retstate)
+    return retstate
+def choose(block,n=0):
+#    n = int(input("enter n :   "))
+    if n==0:
+        n=random.randrange(1,10,1)
+    #print(n,end='  ')
+    # if n==10:
+    #     print('exited with val 9')
+    #     exit()
     retarr = list()
     global outval
     global inval
@@ -51,8 +69,19 @@ def choose(block):
         elif index == outval+3:
             break     
     return retarr
-
-
+def app(l1,l2):
+    l3 = [[0] * 5 for i in range(5)]
+    for i,val in enumerate(l2):
+        for j,v2 in enumerate(val):
+            l3[i][j]=v2
+    l1.append(l3)
+    
+def same(initial,final):
+    x = len(final)
+    for i in range(x):
+        if initial[i] != final[i]:
+            return False
+    return True
 if __name__=='__main__':
     initial = [
         ['Yellow','Blue','Yellow','Purple','Green'],
@@ -61,6 +90,13 @@ if __name__=='__main__':
         ['Red','Green','Green','Blue','Yellow'],
         ['Purple','Purple','Purple','Yellow','Yellow']
         ]
+    comp = [
+        ['Yellow','Yellow','Yellow','Yellow','Yellow'],
+        ['Red','Red','Red','Red','Red'],
+        ['Green','Green','Green','Green','Purple'],
+        ['Blue','Blue','Blue','Blue','Purple'],
+        ['Purple','Purple','Purple','Blue','Green']
+        ]
     final = [
         ['Yellow','Yellow','Yellow','Yellow','Yellow'],
         ['Red','Red','Red','Red','Red'],
@@ -68,7 +104,55 @@ if __name__=='__main__':
         ['Blue','Blue','Blue','Blue','Blue'],
         ['Purple','Purple','Purple','Purple','Purple']
         ]
-    val=rotate_90(rotate_90(rotate_90(rotate_90(initial))))
-    print('After rotating : ')
-    for i in val:
-        print(i)
+    retstate=[['', '', '','',''],
+           ['', '', '','',''],
+           ['', '', '','',''],
+           ['', '', '','',''],
+           ['', '', '','','']]
+#   val=rotate_90(rotate_90(rotate_90(rotate_90(initial))))
+    #print('After rotating : ')
+    #initial=final
+    val=final
+    checker = list()
+    checker.append(val)
+#   if val==final:
+#      print('Puzzle completed')
+    pre=0
+    possib=1
+    rotater=1
+    cval=0
+    # for i in range(5):
+    #     while val[i]!=final[i]:
+    while  True:
+        print('Possiblities : ',possib)
+        if cval==len(checker):
+            print('Possiblities : ',possib)
+            break
+            cval+=1
+        if rotater==10:
+            rotater=1
+            print('Possiblities : ',possib)
+            break
+        val=rotate_90(val,rotater)
+        pre+=1
+        if val not in checker:
+            app(checker,val[:])
+            possib+=1
+        if pre==4:
+            pre=0
+            rotater+=1
+    for c in checker:
+        for i in c:
+            print(i)
+        print('\n\n\n')
+
+    # while val!=final:
+    #     val=rotate_90(val,0)
+    #     display(val)
+    #     tries+=1
+    #     if tries > 5:
+    #         print('too many tries..')
+    #         exit()
+    #     if val==final:
+    #         print('puzzle completed')
+    #         break
